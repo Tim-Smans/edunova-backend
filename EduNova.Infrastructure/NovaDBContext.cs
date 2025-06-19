@@ -1,4 +1,5 @@
 ﻿using EduNova.Infrastructure.Entities;
+using EduNova.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -34,7 +35,7 @@ namespace EduNova.Infrastructure
             InitTables(builder);
 
             // Seed dummy data
-            SeedTables(builder);
+            ModelBuilderHelpers.SeedTables(builder);
         }
 
         private void InitRelationships(ModelBuilder builder)

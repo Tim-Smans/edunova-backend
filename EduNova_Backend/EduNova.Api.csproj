@@ -16,4 +16,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EduNova.Infrastructure\EduNova.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
