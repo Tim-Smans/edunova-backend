@@ -3,7 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36212.18 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduNova_Backend", "EduNova_Backend\EduNova_Backend.csproj", "{44728428-0674-4F1C-90C3-2280B02D298B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduNova.Api", "EduNova_Backend\EduNova.Api.csproj", "{44728428-0674-4F1C-90C3-2280B02D298B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1BEA82EC-77C8-4362-854B-06D6940DA612} = {1BEA82EC-77C8-4362-854B-06D6940DA612}
+		{C40983FD-7146-4A76-880C-A8EB7594E257} = {C40983FD-7146-4A76-880C-A8EB7594E257}
+		{D742D848-863D-4E8D-91AA-E4445AEA5BD9} = {D742D848-863D-4E8D-91AA-E4445AEA5BD9}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduNova.Core", "EduNova.Core\EduNova.Core.csproj", "{D742D848-863D-4E8D-91AA-E4445AEA5BD9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1BEA82EC-77C8-4362-854B-06D6940DA612} = {1BEA82EC-77C8-4362-854B-06D6940DA612}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduNova.Infrastructure", "EduNova.Infrastructure\EduNova.Infrastructure.csproj", "{C40983FD-7146-4A76-880C-A8EB7594E257}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1BEA82EC-77C8-4362-854B-06D6940DA612} = {1BEA82EC-77C8-4362-854B-06D6940DA612}
+		{D742D848-863D-4E8D-91AA-E4445AEA5BD9} = {D742D848-863D-4E8D-91AA-E4445AEA5BD9}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduNova.Shared", "EduNova.Shared\EduNova.Shared.csproj", "{1BEA82EC-77C8-4362-854B-06D6940DA612}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +33,18 @@ Global
 		{44728428-0674-4F1C-90C3-2280B02D298B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44728428-0674-4F1C-90C3-2280B02D298B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44728428-0674-4F1C-90C3-2280B02D298B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D742D848-863D-4E8D-91AA-E4445AEA5BD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D742D848-863D-4E8D-91AA-E4445AEA5BD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D742D848-863D-4E8D-91AA-E4445AEA5BD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D742D848-863D-4E8D-91AA-E4445AEA5BD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C40983FD-7146-4A76-880C-A8EB7594E257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C40983FD-7146-4A76-880C-A8EB7594E257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C40983FD-7146-4A76-880C-A8EB7594E257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C40983FD-7146-4A76-880C-A8EB7594E257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BEA82EC-77C8-4362-854B-06D6940DA612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BEA82EC-77C8-4362-854B-06D6940DA612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BEA82EC-77C8-4362-854B-06D6940DA612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BEA82EC-77C8-4362-854B-06D6940DA612}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
