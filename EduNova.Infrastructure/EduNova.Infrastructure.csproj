@@ -31,4 +31,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EduNova.Core\EduNova.Core.csproj" />
+  </ItemGroup>
+
 </Project>
