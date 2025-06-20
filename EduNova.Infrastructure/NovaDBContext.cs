@@ -1,5 +1,6 @@
 ﻿using EduNova.Infrastructure.Entities;
 using EduNova.Infrastructure.Helpers;
+using EduNova.Infrastructure.MultiTenancy;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,9 +15,11 @@ namespace EduNova.Infrastructure
 {
     public class NovaDBContext : IdentityDbContext<CustomUser>
     {
+        private readonly ITenantProvider _tenantProvider;
 
-        public NovaDBContext(DbContextOptions<NovaDBContext> options) : base(options)
-        {    
+        public NovaDBContext(DbContextOptions<NovaDBContext> options, ITenantProvider tenantProvider) : base(options)
+        {
+            _tenantProvider = tenantProvider;
         }
 
         public DbSet<CustomUser> Users {  get; set; }
@@ -59,6 +62,10 @@ namespace EduNova.Infrastructure
             builder.Entity<CustomUser>().ToTable("CustomUsers");
             builder.Entity<HouseStyle>().ToTable("HouseStyles");
             builder.Entity<Tenant>().ToTable("Tenants");
+
+            builder.Entity<CustomUser>().HasQueryFilter(c => c.TenantId == _tenantProvider.TenantId);
+            builder.Entity<HouseStyle>().HasQueryFilter(h => h.TenantId == _tenantProvider.TenantId);
+
         }
     }
 }

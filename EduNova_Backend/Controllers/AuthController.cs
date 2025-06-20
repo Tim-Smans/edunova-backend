@@ -27,65 +27,104 @@ namespace EduNova.Api.Controllers
         }
 
 
-        [HttpPost("login")]
         [AllowAnonymous]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null && !user.EmailConfirmed)
-            {
-                ModelState.AddModelError("message", "Emailadres not yet confirmed.");
-                return BadRequest(model);
-            }
-            if (await _userManager.CheckPasswordAsync(user, model.Password) == false)
-            {
-                ModelState.AddModelError("message", "Wrong logincombination!");
-                return BadRequest(model);
-            }
+            // Extract domain from email
+            var emailDomain = model.Email.Split('@').LastOrDefault();
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, false, true);
+            if (emailDomain == null)
+                return BadRequest("Invalid email format");
+
+            // Lookup tenant by domain
+            var tenant = await _userManager.Users
+                .IgnoreQueryFilters()
+                .Select(u => u.Tenant)
+                .Distinct()
+                .FirstOrDefaultAsync(t => t.EmailDomain == "@" + emailDomain);
+
+            if (tenant == null)
+                return Unauthorized("No tenant found for this email domain");
+
+            // Find user by email and tenant
+            var user = await _userManager.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(u => u.NormalizedEmail == model.Email.ToUpper() && u.TenantId == tenant.Id);
+
+            if (user == null)
+                return Unauthorized("Invalid credentials");
+
+            if (!user.EmailConfirmed)
+                return BadRequest("Email not confirmed");
+
+            if (!await _userManager.CheckPasswordAsync(user, model.Password))
+                return BadRequest("Wrong login combination");
+
+            // SignInManager login
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
 
             if (result.IsLockedOut)
-                ModelState.AddModelError("message", "Account blocked!");
+                return BadRequest("Account is locked");
 
-            if (result.Succeeded)
-            {
-                var authClaims = new List<Claim>
+            if (!result.Succeeded)
+                return Unauthorized("Failed login");
+
+            // Maak claims, incl. TenantId
+            var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("tenant_id", user.TenantId.ToString())
             };
 
-                var userRoles = await _userManager.GetRolesAsync(user);
-                if (userRoles != null)
-                {
-                    foreach (var userRole in userRoles)
-                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
 
-                var token = Token.GetToken(authClaims);
+            var token = Token.GetToken(authClaims);
 
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
-            }
-
-            ModelState.AddModelError("message", "Failed login attempt");
-            return Unauthorized(ModelState);
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo
+            });
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [Route("List")]
         [HttpGet]
-        public async Task<ActionResult> GetLijst()
+        public async Task<ActionResult> GetList()
         {
-            return Ok(await _userManager.Users.ToListAsync());
+            return Ok(await _userManager.Users.IgnoreQueryFilters().ToListAsync());
+        }
+
+
+        [Authorize]
+        [Route("Current")]
+        [HttpGet]
+        public async Task<ActionResult> GetCurrentUser()
+        {
+            ClaimsPrincipal currentUser = this.User;
+            string? currentId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(currentId))
+                return Unauthorized("No valid user id found in current token.");
+
+
+            CustomUser? user = await _userManager.FindByIdAsync(currentId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            //TODO: Change this to DTO instead of entity
+            return Ok(user);
         }
     }
 

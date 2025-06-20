@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduNova.Infrastructure.Migrations
 {
     [DbContext(typeof(NovaDBContext))]
-    [Migration("20250619134648_Init")]
-    partial class Init
+    [Migration("20250620115048_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

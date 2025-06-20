@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EduNova.Infrastructure.MultiTenancy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -21,7 +22,12 @@ namespace EduNova.Infrastructure
             var optionsBuilder = new DbContextOptionsBuilder<NovaDBContext>();
             optionsBuilder.UseSqlServer(config.GetConnectionString("LocalDBConnection"));
 
-            return new NovaDBContext(optionsBuilder.Options);
+            return new NovaDBContext(optionsBuilder.Options, new DesignTimeTenantProvider());
         }
+    }
+
+    public class DesignTimeTenantProvider : ITenantProvider
+    {
+        public Guid TenantId => Guid.Parse("11111111-1111-1111-1111-111111111111");
     }
 }

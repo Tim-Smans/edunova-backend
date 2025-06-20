@@ -2,6 +2,9 @@ using EduNova.Core.Auth;
 using EduNova.Infrastructure;
 using EduNova.Infrastructure.Entities;
 using EduNova.Infrastructure.Helpers;
+using EduNova.Infrastructure.MultiTenancy;
+using EduNova.Infrastructure.Repositories;
+using EduNova.Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +16,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -24,6 +27,11 @@ builder.Services.AddDbContext<NovaDBContext>(options => options.UseSqlServer(bui
 
 builder.Services.AddIdentity<CustomUser, IdentityRole>().AddEntityFrameworkStores<NovaDBContext>();
 builder.Services.AddTransient<IdentitySeeding>();
+
+// Services and Repos
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); 
+builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 
 // JWT
 // We Are using the MySettings in Token Class, Our login method needs it
@@ -120,6 +128,8 @@ app.MapControllers();
 
 
 //Run identity seeding
+
+/*
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeding>();
@@ -127,5 +137,6 @@ using (var scope = app.Services.CreateScope())
     RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     await seeder.IdentitySeedingAsync(userManager, roleManager);
 }
+*/
 
 app.Run();
