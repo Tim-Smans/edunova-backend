@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace EduNova.Infrastructure.Repositories.Interfaces
 {
-    public interface IUnitOfWork
+    public interface ITenantRepo : IGenericRepo<Tenant>
     {
-        IGenericRepo<CustomUser> UserRepo { get; }
-        ITenantRepo TenantRepo { get; }
-        IGenericRepo<HouseStyle> HouseStyleRepo { get; }
-
-        public void SaveChanges();
+        Task<Tenant> GetByNameAsync(string name);
     }
 }

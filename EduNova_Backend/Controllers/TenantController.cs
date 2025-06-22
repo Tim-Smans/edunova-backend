@@ -22,13 +22,28 @@ namespace EduNova.Api.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> ReadTenantById(Guid id)
         {
             Tenant? tenant = await _unitOfWork.TenantRepo.GetByIdAsync(id);
             if (tenant == null)
             {
                 return NotFound("No tenant found with this id");
+            }
+
+            ReadTenantDTO readTenantDTO = _mapper.Map<ReadTenantDTO>(tenant);
+
+            return Ok(readTenantDTO);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("by-name/{name}")]
+        public async Task<IActionResult> ReadTenantByName(string name)
+        {
+            Tenant? tenant = await _unitOfWork.TenantRepo.GetByNameAsync(name);
+            if (tenant == null)
+            {
+                return NotFound("No tenant found with this name");
             }
 
             ReadTenantDTO readTenantDTO = _mapper.Map<ReadTenantDTO>(tenant);

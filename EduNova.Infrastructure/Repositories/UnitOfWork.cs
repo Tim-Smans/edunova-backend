@@ -8,7 +8,7 @@ namespace EduNova.Infrastructure.Repositories
         private readonly NovaDBContext _context;
 
         private IGenericRepo<CustomUser> userRepo;
-        private IGenericRepo<Tenant> tenantRepo;
+        private ITenantRepo tenantRepo;
         private IGenericRepo<HouseStyle> houseStyleRepo;
 
         public UnitOfWork(NovaDBContext context)
@@ -26,13 +26,13 @@ namespace EduNova.Infrastructure.Repositories
                 return userRepo;
             }
         }
-        public IGenericRepo<Tenant> TenantRepo
+        public ITenantRepo TenantRepo
         {
             get
             {
                 if (this.tenantRepo == null)
                     this.tenantRepo
-                        = new GenericRepo<Tenant>(_context);
+                        = new TenantRepo(_context);
                 return tenantRepo;
             }
         }
