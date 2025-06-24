@@ -11,8 +11,9 @@ namespace EduNova.Infrastructure.Repositories.Interfaces
         Task<ICollection<TEntity>> GetAllAsync();
         Task<TEntity?> GetByIdAsync(Guid id);
         Task AddAsync(TEntity entity);
+        Task SaveAsync();
+
         void Update(TEntity entity);
         void Delete(TEntity entity);
-        void Save();
     }
 }

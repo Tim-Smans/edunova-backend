@@ -28,6 +28,9 @@ namespace EduNova.Api.Controllers
 
 
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO model)
         {
@@ -97,8 +100,9 @@ namespace EduNova.Api.Controllers
 
         [AllowAnonymous]
         [Route("List")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<ActionResult> GetList()
+        public async Task<ActionResult> ReadList()
         {
             return Ok(await _userManager.Users.IgnoreQueryFilters().ToListAsync());
         }
@@ -106,8 +110,11 @@ namespace EduNova.Api.Controllers
 
         [Authorize]
         [Route("Current")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<ActionResult> GetCurrentUser()
+        public async Task<ActionResult> ReadCurrentUser()
         {
             ClaimsPrincipal currentUser = this.User;
             string? currentId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);

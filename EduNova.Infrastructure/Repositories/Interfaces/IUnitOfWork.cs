@@ -1,4 +1,6 @@
 ﻿using EduNova.Infrastructure.Entities;
+using EduNova.Infrastructure.Entities.Courses;
+using EduNova.Infrastructure.Entities.Tenancy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace EduNova.Infrastructure.Repositories.Interfaces
         IGenericRepo<CustomUser> UserRepo { get; }
         ITenantRepo TenantRepo { get; }
         IGenericRepo<HouseStyle> HouseStyleRepo { get; }
+        IGenericRepo<Course> CourseRepo { get; }
 
         public void SaveChanges();
     }

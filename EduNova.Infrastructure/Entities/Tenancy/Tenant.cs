@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduNova.Infrastructure.Entities
+namespace EduNova.Infrastructure.Entities.Tenancy
 {
     public class Tenant
     {
@@ -13,7 +14,7 @@ namespace EduNova.Infrastructure.Entities
         public string Name { get; set; }
         public string EmailDomain { get; set; }
 
-        public ICollection<CustomUser> Users {  get; set; }
-        public HouseStyle HouseStyle { get; set; }
+        public ICollection<CustomUser>? Users {  get; set; }
+        public HouseStyle? HouseStyle { get; set; }
     }
 }

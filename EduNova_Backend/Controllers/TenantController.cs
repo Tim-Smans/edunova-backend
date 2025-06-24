@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using EduNova.Core.DTO.Tenant;
-using EduNova.Infrastructure.Entities;
+using EduNova.Infrastructure.Entities.Tenancy;
 using EduNova.Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +23,8 @@ namespace EduNova.Api.Controllers
 
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ReadTenantById(Guid id)
         {
             Tenant? tenant = await _unitOfWork.TenantRepo.GetByIdAsync(id);
@@ -38,6 +40,8 @@ namespace EduNova.Api.Controllers
 
         [AllowAnonymous]
         [HttpGet("by-name/{name}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ReadTenantByName(string name)
         {
             Tenant? tenant = await _unitOfWork.TenantRepo.GetByNameAsync(name);

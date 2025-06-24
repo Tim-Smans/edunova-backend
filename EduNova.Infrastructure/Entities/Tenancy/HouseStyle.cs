@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduNova.Infrastructure.Entities
+namespace EduNova.Infrastructure.Entities.Tenancy
 {
     public class HouseStyle
     {
@@ -14,6 +14,6 @@ namespace EduNova.Infrastructure.Entities
         public string PrimaryColor { get; set; }
 
         public Guid? TenantId { get; set; }
-        public Tenant Tenant { get; set; }
+        public Tenant? Tenant { get; set; }
     }
 }

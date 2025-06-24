@@ -1,3 +1,4 @@
+using EduNova.Api.Middleware;
 using EduNova.Core.Auth;
 using EduNova.Infrastructure;
 using EduNova.Infrastructure.Entities;
@@ -134,6 +135,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//Middleware
+app.UseMiddleware<ExceptionMiddleware>();
+
 
 app.UseRouting();
 app.UseAuthentication();

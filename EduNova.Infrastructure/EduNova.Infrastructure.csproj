@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EduNova.Core\EduNova.Core.csproj" />
+    <ProjectReference Include="..\EduNova.Shared\EduNova.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

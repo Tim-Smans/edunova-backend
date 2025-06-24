@@ -1,4 +1,4 @@
-﻿using EduNova.Infrastructure.Entities;
+﻿using EduNova.Infrastructure.Entities.Tenancy;
 using System;
 using System.Collections.Generic;
 using System.Linq;

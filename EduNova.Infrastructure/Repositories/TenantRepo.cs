@@ -1,4 +1,4 @@
-﻿using EduNova.Infrastructure.Entities;
+﻿using EduNova.Infrastructure.Entities.Tenancy;
 using EduNova.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;

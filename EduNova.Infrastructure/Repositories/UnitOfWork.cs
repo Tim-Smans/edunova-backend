@@ -1,4 +1,6 @@
 ﻿using EduNova.Infrastructure.Entities;
+using EduNova.Infrastructure.Entities.Courses;
+using EduNova.Infrastructure.Entities.Tenancy;
 using EduNova.Infrastructure.Repositories.Interfaces;
 
 namespace EduNova.Infrastructure.Repositories
@@ -10,6 +12,7 @@ namespace EduNova.Infrastructure.Repositories
         private IGenericRepo<CustomUser> userRepo;
         private ITenantRepo tenantRepo;
         private IGenericRepo<HouseStyle> houseStyleRepo;
+        private IGenericRepo<Course> courseRepo;
 
         public UnitOfWork(NovaDBContext context)
         {
@@ -44,6 +47,16 @@ namespace EduNova.Infrastructure.Repositories
                     this.houseStyleRepo
                         = new GenericRepo<HouseStyle>(_context);
                 return houseStyleRepo;
+            }
+        }
+        public IGenericRepo<Course> CourseRepo
+        {
+            get
+            {
+                if (this.courseRepo == null)
+                    this.courseRepo
+                        = new GenericRepo<Course>(_context);
+                return courseRepo;
             }
         }
 

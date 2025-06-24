@@ -44,9 +44,9 @@ namespace EduNova.Infrastructure.Repositories
             _context.Set<TEntity>().Remove(entity);
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

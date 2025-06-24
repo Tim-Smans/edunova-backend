@@ -1,4 +1,4 @@
-﻿using EduNova.Infrastructure.Entities;
+﻿using EduNova.Infrastructure.Entities.Tenancy;
 using Microsoft.EntityFrameworkCore;
 
 namespace EduNova.Infrastructure.Helpers
