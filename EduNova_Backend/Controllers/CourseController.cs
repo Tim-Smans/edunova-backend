@@ -3,6 +3,7 @@ using EduNova.Core.DTO.Course;
 using EduNova.Infrastructure.Entities.Courses;
 using EduNova.Infrastructure.MultiTenancy;
 using EduNova.Infrastructure.Repositories.Interfaces;
+using EduNova.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -15,14 +16,14 @@ namespace EduNova.Api.Controllers
     public class CourseController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ITenantProvider _tenantProvider;
-        private readonly IUnitOfWork _unitOfWork;
+         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICourseService _courseService;
 
-        public CourseController(IMapper mapper, ITenantProvider tenantProvider, IUnitOfWork unitOfWork)
+        public CourseController(IMapper mapper, IUnitOfWork unitOfWork, ICourseService courseService)
         {
             _mapper = mapper;
-            _tenantProvider = tenantProvider;
             _unitOfWork = unitOfWork;
+            _courseService = courseService;
         }
 
 
@@ -32,14 +33,7 @@ namespace EduNova.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ReadCourseDTO>> ReadCourseById(Guid id)
         {
-            Course? course = await _unitOfWork.CourseRepo.GetByIdAsync(id);
-
-            if (course == null)
-            {
-                return NotFound("Unable to find course with that id");
-            }
-
-            ReadCourseDTO courseDTO = _mapper.Map<ReadCourseDTO>(course);
+            ReadCourseDTO courseDTO = await _courseService.ReadCourseById(id);
 
             return Ok(courseDTO);
         }
@@ -54,16 +48,9 @@ namespace EduNova.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            Course course = _mapper.Map<Course>(courseDTO);
+            ReadCourseDTO readCourseDTO = await _courseService.CreateCourse(courseDTO);
 
-            course.TenantId = _tenantProvider.TenantId;
-
-            await _unitOfWork.CourseRepo.AddAsync(course);
-            await _unitOfWork.CourseRepo.SaveAsync();
-
-            ReadCourseDTO readCourseDTO = _mapper.Map<ReadCourseDTO>(course);
-
-            return CreatedAtAction(nameof(ReadCourseById), new { id = course.Id }, readCourseDTO);
+            return CreatedAtAction(nameof(ReadCourseById), new { id = readCourseDTO.Id }, readCourseDTO);
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -72,22 +59,13 @@ namespace EduNova.Api.Controllers
         [HttpPut("{courseId}")]
         public async Task<IActionResult> UpdateCourse(Guid courseId, UpdateCourseDTO courseDTO)
         {
-            Course? originalCourse = await _unitOfWork.CourseRepo.GetByIdAsync(courseId);
-
-            if (originalCourse == null)
-            {
-                return NotFound("No model exists with this id");
-            }
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _mapper.Map(courseDTO, originalCourse);
-            _unitOfWork.CourseRepo.Update(originalCourse);
-            await _unitOfWork.CourseRepo.SaveAsync();
-
+            await _courseService.UpdateCourse(courseId, courseDTO);
+                
             return NoContent();
         }
 
@@ -97,23 +75,9 @@ namespace EduNova.Api.Controllers
         [HttpDelete("{courseId}")]
         public async Task<IActionResult> DeleteCourse(Guid courseId)
         {
-            Course? course = await _unitOfWork.CourseRepo.GetByIdAsync(courseId);
-
-            if(course == null)
-            {
-                return NotFound("No course found with that course id");
-            }
-
-            _unitOfWork.CourseRepo.Delete(course);
-            await _unitOfWork.CourseRepo.SaveAsync();
+            await _courseService.DeleteCourse(courseId);
 
             return NoContent();
-        }
-
-        [HttpGet("test-error")]
-        public IActionResult ThrowTestError()
-        {
-            throw new Exception("Test exception");
         }
     }
 }

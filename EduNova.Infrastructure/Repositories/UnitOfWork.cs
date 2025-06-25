@@ -13,6 +13,8 @@ namespace EduNova.Infrastructure.Repositories
         private ITenantRepo tenantRepo;
         private IGenericRepo<HouseStyle> houseStyleRepo;
         private IGenericRepo<Course> courseRepo;
+        private IGenericRepo<CourseTag> courseTagRepo;
+        private IGenericRepo<Tag> tagRepo;
 
         public UnitOfWork(NovaDBContext context)
         {
@@ -57,6 +59,26 @@ namespace EduNova.Infrastructure.Repositories
                     this.courseRepo
                         = new GenericRepo<Course>(_context);
                 return courseRepo;
+            }
+        }
+        public IGenericRepo<CourseTag> CourseTagRepo
+        {
+            get
+            {
+                if (this.courseTagRepo == null)
+                    this.courseTagRepo
+                        = new GenericRepo<CourseTag>(_context);
+                return courseTagRepo;
+            }
+        }
+        public IGenericRepo<Tag> TagRepo
+        {
+            get
+            {
+                if (this.tagRepo == null)
+                    this.tagRepo
+                        = new GenericRepo<Tag>(_context);
+                return tagRepo;
             }
         }
 

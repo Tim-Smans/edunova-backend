@@ -6,6 +6,8 @@ using EduNova.Infrastructure.Helpers;
 using EduNova.Infrastructure.MultiTenancy;
 using EduNova.Infrastructure.Repositories;
 using EduNova.Infrastructure.Repositories.Interfaces;
+using EduNova.Infrastructure.Services;
+using EduNova.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +50,8 @@ builder.Services.AddTransient<IdentitySeeding>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); 
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
+builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 
 // JWT
 // We Are using the MySettings in Token Class, Our login method needs it

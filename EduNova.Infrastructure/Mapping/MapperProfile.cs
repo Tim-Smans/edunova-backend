@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using EduNova.Core.DTO.Course;
+using EduNova.Core.DTO.Tag;
 using EduNova.Core.DTO.Tenant;
 using EduNova.Infrastructure.Entities.Courses;
 using EduNova.Infrastructure.Entities.Tenancy;
+using EduNova.Infrastructure.MultiTenancy;
 
 namespace EduNova.Infrastructure.Mapping
 {
@@ -12,9 +14,16 @@ namespace EduNova.Infrastructure.Mapping
         public MapperProfile()
         {
             CreateMap<Tenant, ReadTenantDTO>();
-            CreateMap<CreateCourseDTO, Course>();
+
+            // Course mappings
+            CreateMap<CreateCourseDTO, Course>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(src => Guid.NewGuid()));
             CreateMap<UpdateCourseDTO, Course>();
             CreateMap<Course, ReadCourseDTO>();
+
+            // Tag mappings
+            CreateMap<CreateTagDTO, Tag>();
+            CreateMap<Tag, ReadTagDTO>();
         }
     }
 }

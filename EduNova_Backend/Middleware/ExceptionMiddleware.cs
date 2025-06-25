@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace EduNova.Api.Middleware
 {
@@ -38,13 +40,22 @@ namespace EduNova.Api.Middleware
             //Put the response header to JSON in the ProblemDetails format
             httpContext.Response.ContentType = "application/problem+json";
 
-            //Put the HTTP-status code to 500
-            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            //Get and put the HTTP-status code
+            int statusCode = ex switch
+            {
+                KeyNotFoundException => StatusCodes.Status404NotFound,
+                UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+                ValidationException => StatusCodes.Status400BadRequest,
+                _ => StatusCodes.Status500InternalServerError
+            };
+
+            httpContext.Response.StatusCode = statusCode;
+
 
             //Build the ProblemDetails object, it gives info on the error
             ProblemDetails problem = new ProblemDetails
             {
-                Status = StatusCodes.Status500InternalServerError, 
+                Status = statusCode, 
                 Title = "An unexpected error occurred!",
                 Detail = ex.Message,
                 Instance = httpContext.Request.Path

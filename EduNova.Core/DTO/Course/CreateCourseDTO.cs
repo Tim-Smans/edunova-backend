@@ -3,9 +3,7 @@
 namespace EduNova.Core.DTO.Course
 {
     public class CreateCourseDTO
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        
+    {        
         [
             Required(ErrorMessage ="A course title is required"),
             MinLength(5, ErrorMessage ="A course title needs to be at least 5 characters long"),

@@ -15,6 +15,8 @@ namespace EduNova.Infrastructure.Repositories.Interfaces
         ITenantRepo TenantRepo { get; }
         IGenericRepo<HouseStyle> HouseStyleRepo { get; }
         IGenericRepo<Course> CourseRepo { get; }
+        IGenericRepo<Tag> TagRepo { get; }
+        IGenericRepo<CourseTag> CourseTagRepo { get; }
 
         public void SaveChanges();
     }
