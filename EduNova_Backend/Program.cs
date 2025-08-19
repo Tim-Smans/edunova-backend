@@ -26,7 +26,10 @@ builder.Services.AddCors(options =>
         policy.SetIsOriginAllowed(origin =>
         {
             // Only allow origins with .localhost domain
-            return origin != null && origin.Contains(".localhost");
+            if (string.IsNullOrEmpty(origin)) return false;
+            var host = new Uri(origin).Host;
+            // Allow plain localhost and any *.localhost (voor je multi-tenant subdomeinen)
+            return host == "localhost" || host.EndsWith(".localhost");
         })
         .AllowAnyHeader()
         .AllowAnyMethod()
@@ -160,9 +163,10 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeding>();
+    var db = scope.ServiceProvider.GetRequiredService<NovaDBContext>();
     UserManager<CustomUser> userManager = scope.ServiceProvider.GetRequiredService<UserManager<CustomUser>>();
     RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    await seeder.IdentitySeedingAsync(userManager, roleManager);
+    await seeder.IdentitySeedingAsync(userManager, roleManager, db);
 }
 */
 

@@ -5,6 +5,7 @@ using EduNova.Infrastructure.Entities.Courses;
 using EduNova.Infrastructure.MultiTenancy;
 using EduNova.Infrastructure.Repositories.Interfaces;
 using EduNova.Infrastructure.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,19 @@ namespace EduNova.Infrastructure.Services
             ReadCourseDTO courseDTO = _mapper.Map<ReadCourseDTO>(course);
 
             return courseDTO;
+        }
+
+        public async Task<IEnumerable<ReadCourseDTO>> ReadCourses()
+        {
+            IEnumerable<Course> courses = await _unitOfWork.CourseRepo.GetCoursesWithTags();
+
+            if (courses.IsNullOrEmpty())
+            {
+                throw new KeyNotFoundException("There are no courses in the system of this tenant.");
+            }
+
+            IEnumerable<ReadCourseDTO> courseDtos = _mapper.Map<IEnumerable<ReadCourseDTO>>(courses);
+            return courseDtos;
         }
 
         public async Task UpdateCourse(Guid courseId, UpdateCourseDTO courseDTO)

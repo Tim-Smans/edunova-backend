@@ -37,8 +37,4 @@
     <ProjectReference Include="..\EduNova.Shared\EduNova.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

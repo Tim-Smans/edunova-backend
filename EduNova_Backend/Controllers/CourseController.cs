@@ -6,7 +6,6 @@ using EduNova.Infrastructure.Repositories.Interfaces;
 using EduNova.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace EduNova.Api.Controllers
 {
@@ -16,7 +15,7 @@ namespace EduNova.Api.Controllers
     public class CourseController : ControllerBase
     {
         private readonly IMapper _mapper;
-         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ICourseService _courseService;
 
         public CourseController(IMapper mapper, IUnitOfWork unitOfWork, ICourseService courseService)
@@ -37,6 +36,18 @@ namespace EduNova.Api.Controllers
 
             return Ok(courseDTO);
         }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ReadCourseDTO>>> ReadCourses()
+        {
+            IEnumerable<ReadCourseDTO> courseDTOs = await _courseService.ReadCourses();
+
+            return Ok(courseDTOs);
+        }
+
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

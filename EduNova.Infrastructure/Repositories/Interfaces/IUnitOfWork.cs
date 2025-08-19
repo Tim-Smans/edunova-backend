@@ -14,7 +14,7 @@ namespace EduNova.Infrastructure.Repositories.Interfaces
         IGenericRepo<CustomUser> UserRepo { get; }
         ITenantRepo TenantRepo { get; }
         IGenericRepo<HouseStyle> HouseStyleRepo { get; }
-        IGenericRepo<Course> CourseRepo { get; }
+        ICourseRepo CourseRepo { get; }
         IGenericRepo<Tag> TagRepo { get; }
         IGenericRepo<CourseTag> CourseTagRepo { get; }
 

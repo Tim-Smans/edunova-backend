@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EduNova.Core.DTO.Course;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

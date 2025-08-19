@@ -12,7 +12,7 @@ namespace EduNova.Infrastructure.Repositories
         private IGenericRepo<CustomUser> userRepo;
         private ITenantRepo tenantRepo;
         private IGenericRepo<HouseStyle> houseStyleRepo;
-        private IGenericRepo<Course> courseRepo;
+        private ICourseRepo courseRepo;
         private IGenericRepo<CourseTag> courseTagRepo;
         private IGenericRepo<Tag> tagRepo;
 
@@ -51,13 +51,13 @@ namespace EduNova.Infrastructure.Repositories
                 return houseStyleRepo;
             }
         }
-        public IGenericRepo<Course> CourseRepo
+        public ICourseRepo CourseRepo
         {
             get
             {
                 if (this.courseRepo == null)
                     this.courseRepo
-                        = new GenericRepo<Course>(_context);
+                        = new CourseRepo(_context);
                 return courseRepo;
             }
         }

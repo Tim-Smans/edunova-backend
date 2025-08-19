@@ -11,6 +11,7 @@ namespace EduNova.Infrastructure.Services.Interfaces
     public interface ICourseService
     {
         Task<ReadCourseDTO> ReadCourseById(Guid id);
+        Task<IEnumerable<ReadCourseDTO>> ReadCourses();
         Task<ReadCourseDTO> CreateCourse(CreateCourseDTO courseDTO);
         Task UpdateCourse(Guid courseId, UpdateCourseDTO courseDTO);
         Task DeleteCourse(Guid courseId);

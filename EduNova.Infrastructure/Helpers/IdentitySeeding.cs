@@ -1,5 +1,7 @@
 ﻿using EduNova.Infrastructure.Entities;
+using EduNova.Infrastructure.Entities.Courses;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -11,111 +13,98 @@ namespace EduNova.Infrastructure.Helpers
 {
     public class IdentitySeeding
     {
-        public async Task IdentitySeedingAsync(UserManager<CustomUser> userManager, RoleManager<IdentityRole> roleManager)
+        public async Task IdentitySeedingAsync(
+            UserManager<CustomUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            NovaDBContext db)
         {
             const string DefaultPassword = "Password123!";
 
-            try
+            await CreateRoles(roleManager);
+
+            // --- USERS ---
+            // DuckIT
+            var duckitAdmin = await EnsureUser(userManager, "DuckitAdmin", "admin@duckit.com", SeedGuids.DuckItTenantId, DefaultPassword);
+            await EnsureInRole(userManager, duckitAdmin, "admin");
+
+            var duckitManager = await EnsureUser(userManager, "DuckitManager", "manager@duckit.com", SeedGuids.DuckItTenantId, DefaultPassword);
+            await EnsureInRole(userManager, duckitManager, "manager");
+
+            var duckitAuthor = await EnsureUser(userManager, "DuckitAuthor", "author@duckit.com", SeedGuids.DuckItTenantId, DefaultPassword);
+            await EnsureInRole(userManager, duckitAuthor, "author");
+
+            var duckitUser = await EnsureUser(userManager, "DuckitUser", "user@duckit.com", SeedGuids.DuckItTenantId, DefaultPassword);
+
+            // Example
+            var exampleUser = await EnsureUser(userManager, "ExampleUser", "user@example.be", SeedGuids.ExampleTenantId, DefaultPassword);
+
+            // SysAdmin (tenant = ExampleTenantId in jouw code)
+            var sysAdmin = await EnsureUser(userManager, "SysAdmin", "admin@edunova.com", SeedGuids.ExampleTenantId, DefaultPassword);
+            await EnsureInRole(userManager, sysAdmin, "sysAdmin");
+
+            // --- COURSE ASSIGNMENTS ---
+            // Zorg dat Tenants/Courses via migratie al bestaan; nu kunnen we koppelen op basis van echte user.Id
+            await EnsureCourseAssigned(db,
+                id: SeedGuids.DuckItAssigned1Id,
+                tenantId: SeedGuids.DuckItTenantId,
+                userId: duckitAdmin.Id,
+                courseId: SeedGuids.DuckItCourseJs101Id);
+
+            await EnsureCourseAssigned(db,
+                id: SeedGuids.ExampleAssigned1Id,
+                tenantId: SeedGuids.ExampleTenantId,
+                userId: exampleUser.Id,
+                courseId: SeedGuids.ExampleCourseSqlId);
+        }
+        private async Task<CustomUser> EnsureUser(
+            UserManager<CustomUser> userManager,
+            string userName,
+            string email,
+            Guid tenantId,
+            string password)
+        {
+            var user = await userManager.FindByNameAsync(userName);
+            if (user != null) return user;
+
+            user = new CustomUser
             {
-                await CreateRoles(roleManager);
+                UserName = userName,
+                Email = email,
+                EmailConfirmed = true,
+                TenantId = tenantId
+            };
 
-                // Create users
-
-                //Duckit
-                if (await userManager.FindByNameAsync("DuckitAdmin") == null)
-                {
-                    var duckitAdmin = new CustomUser
-                    {
-                        UserName = "DuckitAdmin",
-                        Email = "admin@duckit.com",
-                        EmailConfirmed = true,
-                        TenantId = SeedGuids.DuckItTenantId,
-                    };
-
-                    await userManager.CreateAsync(duckitAdmin, DefaultPassword);
-                    await userManager.AddToRoleAsync(duckitAdmin, "admin");
-
-                }
-
-                if (await userManager.FindByNameAsync("DuckitManager") == null)
-                {
-                    var duckitManager = new CustomUser
-                    {
-                        UserName = "DuckitManager",
-                        Email = "manager@duckit.com",
-                        EmailConfirmed = true,
-                        TenantId = SeedGuids.DuckItTenantId,
-                    };
-
-                    await userManager.CreateAsync(duckitManager, DefaultPassword);
-                    await userManager.AddToRoleAsync(duckitManager, "manager");
-
-                }
-
-                if (await userManager.FindByNameAsync("DuckitAuthor") == null)
-                {
-                    var duckitAuthor = new CustomUser
-                    {
-                        UserName = "DuckitAuthor",
-                        Email = "author@duckit.com",
-                        EmailConfirmed = true,
-                        TenantId = SeedGuids.DuckItTenantId,
-                    };
-
-                    await userManager.CreateAsync(duckitAuthor, DefaultPassword);
-                    await userManager.AddToRoleAsync(duckitAuthor, "author");
-
-                }
-
-                if (await userManager.FindByNameAsync("DuckitUser") == null)
-                {
-                    var duckitUser = new CustomUser
-                    {
-                        UserName = "DuckitUser",
-                        Email = "user@duckit.com",
-                        EmailConfirmed = true,
-                        TenantId = SeedGuids.DuckItTenantId,
-                    };
-
-                    await userManager.CreateAsync(duckitUser, DefaultPassword);
-                }
-
-                //Example
-                if (await userManager.FindByNameAsync("ExampleUser") == null)
-                {
-                    var exampleUser = new CustomUser
-                    {
-                        UserName = "ExampleUser",
-                        Email = "user@example.be",
-                        EmailConfirmed = true,
-                        TenantId = SeedGuids.ExampleTenantId,
-                    };
-
-                    await userManager.CreateAsync(exampleUser, DefaultPassword);
-                }
-
-                //System admin
-                if (await userManager.FindByNameAsync("SysAdmin") == null)
-                { 
-                    var sysAdmin = new CustomUser
-                    {
-                        UserName = "SysAdmin",
-                        Email = "admin@edunova.com",
-                        EmailConfirmed = true,
-                        TenantId = SeedGuids.ExampleTenantId,
-                    };
-
-                    await userManager.CreateAsync(sysAdmin, DefaultPassword);
-                    await userManager.AddToRoleAsync(sysAdmin, "sysAdmin");
-
-                }
-            }
-            catch (DbException ex)
+            var result = await userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
             {
-                throw new Exception(ex.Message.ToString());
+                throw new Exception($"Failed creating user {userName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
             }
+
+            return user;
         }
 
+        private async Task EnsureInRole(UserManager<CustomUser> userManager, CustomUser user, string role)
+        {
+            if (!await userManager.IsInRoleAsync(user, role))
+                await userManager.AddToRoleAsync(user, role);
+        }
+
+        private async Task EnsureCourseAssigned(NovaDBContext db, Guid id, Guid tenantId, string userId, Guid courseId)
+        {
+            // Idempotent: als hij er al is (op Id of combi), niks doen
+            var exists = await db.CoursesAssigned
+                .AnyAsync(x => x.Id == id || (x.TenantId == tenantId && x.UserId == userId && x.CourseId == courseId));
+            if (exists) return;
+
+            db.CoursesAssigned.Add(new CourseAssigned
+            {
+                Id = id,
+                TenantId = tenantId,
+                UserId = userId,
+                CourseId = courseId
+            });
+            await db.SaveChangesAsync();
+        }
 
         private async Task CreateRoles(RoleManager<IdentityRole> roleManager)
         {

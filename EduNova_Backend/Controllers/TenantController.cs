@@ -4,6 +4,7 @@ using EduNova.Infrastructure.Entities.Tenancy;
 using EduNova.Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EduNova.Api.Controllers
 {
@@ -36,6 +37,23 @@ namespace EduNova.Api.Controllers
             ReadTenantDTO readTenantDTO = _mapper.Map<ReadTenantDTO>(tenant);
 
             return Ok(readTenantDTO);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ReadTenants()
+        {
+            IEnumerable<Tenant>? tenants = await _unitOfWork.TenantRepo.GetAllAsync();
+            if (tenants.IsNullOrEmpty())
+            {
+                return NotFound("No tenants found");
+            }
+
+            IEnumerable<ReadTenantDTO> readTenantDTOs = _mapper.Map<IEnumerable<ReadTenantDTO>>(tenants);
+
+            return Ok(readTenantDTOs);
         }
 
         [AllowAnonymous]

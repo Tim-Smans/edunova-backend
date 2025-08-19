@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduNova.Infrastructure.Migrations
 {
     [DbContext(typeof(NovaDBContext))]
-    [Migration("20250623141803_Added database tables for courses")]
-    partial class Addeddatabasetablesforcourses
+    [Migration("20250817182418_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,6 +93,56 @@ namespace EduNova.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Courses", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333331"),
+                            Category = "Programming",
+                            Description = "Introductie tot JS: syntax, types, DOM, fetch API.",
+                            IsSequential = true,
+                            Public = true,
+                            Published = true,
+                            TargetAudience = "Students/Interns",
+                            TenantId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Title = "JavaScript 101"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333332"),
+                            Category = "Programming",
+                            Description = "Basis C#: OOP, LINQ, async/await, best practices.",
+                            IsSequential = false,
+                            Public = false,
+                            Published = false,
+                            TargetAudience = "Jr Developers",
+                            TenantId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Title = "C# Fundamentals"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333341"),
+                            Category = "Data",
+                            Description = "Selects, joins, aggregaties en indexing-intro.",
+                            IsSequential = true,
+                            Public = true,
+                            Published = true,
+                            TargetAudience = "Analysts",
+                            TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Title = "SQL Basics"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333342"),
+                            Category = "Backend",
+                            Description = "Python essentials, API’s met FastAPI, testing.",
+                            IsSequential = false,
+                            Public = false,
+                            Published = true,
+                            TargetAudience = "Developers",
+                            TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Title = "Python for Backends"
+                        });
                 });
 
             modelBuilder.Entity("EduNova.Infrastructure.Entities.Courses.CourseAssigned", b =>
@@ -146,6 +196,50 @@ namespace EduNova.Infrastructure.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("CourseTags", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555551"),
+                            CourseId = new Guid("33333333-3333-3333-3333-333333333331"),
+                            TagId = new Guid("44444444-4444-4444-4444-444444444441"),
+                            TenantId = new Guid("11111111-1111-1111-1111-111111111111")
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555552"),
+                            CourseId = new Guid("33333333-3333-3333-3333-333333333331"),
+                            TagId = new Guid("44444444-4444-4444-4444-444444444442"),
+                            TenantId = new Guid("11111111-1111-1111-1111-111111111111")
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555553"),
+                            CourseId = new Guid("33333333-3333-3333-3333-333333333332"),
+                            TagId = new Guid("44444444-4444-4444-4444-444444444441"),
+                            TenantId = new Guid("11111111-1111-1111-1111-111111111111")
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555561"),
+                            CourseId = new Guid("33333333-3333-3333-3333-333333333341"),
+                            TagId = new Guid("44444444-4444-4444-4444-444444444451"),
+                            TenantId = new Guid("22222222-2222-2222-2222-222222222222")
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555562"),
+                            CourseId = new Guid("33333333-3333-3333-3333-333333333342"),
+                            TagId = new Guid("44444444-4444-4444-4444-444444444452"),
+                            TenantId = new Guid("22222222-2222-2222-2222-222222222222")
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555563"),
+                            CourseId = new Guid("33333333-3333-3333-3333-333333333342"),
+                            TagId = new Guid("44444444-4444-4444-4444-444444444451"),
+                            TenantId = new Guid("22222222-2222-2222-2222-222222222222")
+                        });
                 });
 
             modelBuilder.Entity("EduNova.Infrastructure.Entities.Courses.Tag", b =>
@@ -164,6 +258,32 @@ namespace EduNova.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444441"),
+                            TenantId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Title = "Programming"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444442"),
+                            TenantId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Title = "Frontend"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444451"),
+                            TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Title = "Data"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444452"),
+                            TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Title = "Backend"
+                        });
                 });
 
             modelBuilder.Entity("EduNova.Infrastructure.Entities.CustomUser", b =>
