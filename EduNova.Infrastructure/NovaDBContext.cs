@@ -70,13 +70,13 @@ namespace EduNova.Infrastructure
 
             builder.Entity<CourseTag>()
                 .HasOne(x => x.Course)
-                .WithMany()
+                .WithMany( x => x.CourseTags)
                 .HasForeignKey(x => x.CourseId)
-                .OnDelete(DeleteBehavior.SetNull);
-            
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<CourseTag>()
                 .HasOne(x => x.Tag)
-                .WithMany()
+                .WithMany(x => x.CourseTags)
                 .HasForeignKey(x => x.TagId)
                 .OnDelete(DeleteBehavior.Cascade);
 

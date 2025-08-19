@@ -12,5 +12,8 @@ namespace EduNova.Infrastructure.Entities.Courses
         public Guid Id { get; set; }
         public string Title { get; set; }
         public Guid TenantId { get; set; }
+        public ICollection<CourseTag>? CourseTags { get; set; }
+
+
     }
 }

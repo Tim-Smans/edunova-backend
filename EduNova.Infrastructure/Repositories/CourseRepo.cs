@@ -18,7 +18,8 @@ namespace EduNova.Infrastructure.Repositories
         public async Task<IEnumerable<Course>> GetCoursesWithTags()
         {
             return await _context.Courses
-                .Include(x => x.CourseTags)
+                .Include(x => x.CourseTags!)
+                    .ThenInclude(x => x.Tag)
                 .ToListAsync();
         }
     }

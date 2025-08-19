@@ -19,7 +19,8 @@ namespace EduNova.Infrastructure.Mapping
             CreateMap<CreateCourseDTO, Course>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(src => Guid.NewGuid()));
             CreateMap<UpdateCourseDTO, Course>();
-            CreateMap<Course, ReadCourseDTO>();
+            CreateMap<Course, ReadCourseDTO>()
+                .ForMember(x => x.CourseTags, opt => opt.MapFrom(src => src.CourseTags.Select(x => x.Tag)));
 
             // Tag mappings
             CreateMap<CreateTagDTO, Tag>();
